@@ -25,20 +25,23 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/article/show">Статьи</a>
+        </li>
         <li class="nav-item active">
-          <a class="nav-link" href="about">О нас <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="/about">О нас <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="contact">Контакты</a>
+          <a class="nav-link" href="/contact">Контакты</a>
         </li>
       </ul>
     </div>
     <div class="navbar-nav d-flex justify-content-end">
       <li class="nav-item">
-        <a class="nav-link" href="signup">Регистрация</a>
+        <a class="nav-link" href="/signup">Регистрация</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="auth/login">Вход</a>
+        <a class="nav-link" href="/auth/login">Вход</a>
       </li>
     </div>
     </nav>
