@@ -8,6 +8,12 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <style>
+      .hidden {
+          display: none;
+      }
+    </style>
   </head>
   <body>
       
@@ -26,7 +32,10 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="/article/show">Статьи</a>
+          <a class="nav-link" href="/article">Статьи</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/article/create">Создать статью</a>
         </li>
         <li class="nav-item active">
           <a class="nav-link" href="/about">О нас <span class="sr-only">(current)</span></a>

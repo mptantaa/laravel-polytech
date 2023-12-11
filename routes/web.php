@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::resource('article', ArticleController::class);
+
 Route::get('/article/show', [ArticleController::class,'index']);
 Route::get('/signup', [AuthController::class,'create']);
 Route::post('/auth/login', [AuthController::class,'signUp']);
