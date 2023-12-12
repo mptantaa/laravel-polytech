@@ -39,7 +39,6 @@ class CommentController extends Controller
         $comment->title = $request->title;
         $comment->text = $request->text;
         $comment->save();
-        var_dump($comment->article_id);
         return redirect()->route('article.show', ['article'=>$comment->article_id]);
     }
     public function destroy($id){
