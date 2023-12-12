@@ -15,11 +15,17 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::resource('article', ArticleController::class);
 
-Route::get('/article/show', [ArticleController::class,'index']);
+//Auth
 Route::get('/signup', [AuthController::class,'create']);
-Route::post('/auth/login', [AuthController::class,'signUp']);
+Route::post('/signup', [AuthController::class,'signUp']);
+Route::get('/signin', [AuthController::class,'auth'])->name('login');
+Route::post('/signin', [AuthController::class,'signIn']);
+Route::get('/logout', [AuthController::class,'logout']);
+
+
+//Article
+Route::resource('article', ArticleController::class)->middleware('auth:sanctum');
 
 Route::get('/', [MainController::class,'index']);
 Route::get('/gallery/{full_image}', [MainController::class,'show']);
