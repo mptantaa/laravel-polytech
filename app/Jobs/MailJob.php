@@ -31,6 +31,7 @@ class MailJob implements ShouldQueue
      */
     public function handle(): void
     {
+
         Mail::send(new CommentMail($this->comment));
     }
 }
