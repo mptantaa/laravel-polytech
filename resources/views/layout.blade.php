@@ -34,9 +34,11 @@
         <li class="nav-item">
           <a class="nav-link" href="/article">Статьи</a>
         </li>
+        @can('create')
         <li class="nav-item">
           <a class="nav-link" href="/article/create">Создать статью</a>
         </li>
+        @endcan
         <li class="nav-item active">
           <a class="nav-link" href="/about">О нас <span class="sr-only">(current)</span></a>
         </li>
