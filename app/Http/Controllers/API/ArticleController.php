@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Jobs\MailJob;
 use App\Models\Article;
@@ -8,7 +8,7 @@ use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Gate;
-
+use App\Http\Controllers\Controller;
 
 class ArticleController extends Controller
 {
@@ -18,7 +18,7 @@ class ArticleController extends Controller
     public function index()
     {
         $articles = Article::latest()->paginate(5);
-        return view('articles/index', ['articles'=> $articles]);
+        return response()->json(['articles'=>$articles]);
     }
 
     /**
@@ -26,8 +26,8 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        Gate::authorize('create', [self::class]);
-        return view('articles/create');
+        // $this->authorize('create', [self::class]);
+        // return view('articles/create');
     }
 
     /**
@@ -52,7 +52,7 @@ class ArticleController extends Controller
         $article->user_id = auth()->id();
         $res = $article->save();
         if ($res) MailJob::dispatch($article);
-        return redirect(route('article.index'));
+        return response()->json($res);
     }
 
     /**
@@ -61,7 +61,7 @@ class ArticleController extends Controller
     public function show(Article $article)
     {
         $comments = Comment::where('article_id', $article->id)->latest()->get();
-        return view('articles/show', ['article'=>$article, 'comments'=>$comments]);
+        return response()->json(['article'=>$article, 'comments'=>$comments]);
     }
 
     /**
@@ -70,7 +70,7 @@ class ArticleController extends Controller
     public function edit(Article $article)
     {
         Gate::authorize('create', [self::class]);
-        return view('articles/edit', ['article' => $article]);
+        return response()->json(['article' => $article]);
     }
 
     /**
@@ -91,7 +91,7 @@ class ArticleController extends Controller
         $article->shortDesc = $request->shortDesc;
         $article->desc = $request->desc;
         $article->save();
-        return redirect(route('article.show', ['article' => $article]));
+        return response()->json($article);
     }
 
     /**
@@ -100,9 +100,8 @@ class ArticleController extends Controller
     public function destroy(Article $article)
     {
         Gate::authorize('create', [self::class]);
-
         Comment::where('article_id', $article->id)->delete();
         $article->delete();
-        return redirect()->route('article.index');
+        return response()->json($article, 201);
     }
 }

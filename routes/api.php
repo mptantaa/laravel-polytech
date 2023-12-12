@@ -2,7 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\API\ArticleController;
+use App\Http\Controllers\API\CommentController;
+use App\Http\Controllers\API\AuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,7 +15,19 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+//Auth
+Route::post('/signup', [AuthController::class,'signUp']);
+Route::post('/signin', [AuthController::class,'signIn']);
+Route::get('/logout', [AuthController::class,'logout']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+//Article
+Route::resource('article', ArticleController::class)->middleware('auth:sanctum');
+
+//Comment
+Route::middleware('auth:sanctum')->prefix('/comment')->group(function () {
+    Route::post('', [CommentController::class, 'store']);
+    Route::put('{comment}', [CommentController::class, 'update']);
+    Route::delete('{comment}', [CommentController::class, 'destroy']);
 });
+
