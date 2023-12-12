@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
@@ -21,6 +22,7 @@ class ArticleController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', [self::class]);
         return view('articles/create');
     }
 
@@ -29,6 +31,8 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', [self::class]);
+
         $request->validate([
             'datePublic'=> 'required',
             'title'=> 'required',
@@ -40,6 +44,7 @@ class ArticleController extends Controller
         $article->title = $request->title;
         $article->shortDesc = $request->shortDesc;
         $article->desc = $request->desc;
+        $article->user_id = auth()->id();
         $article->save();
         return redirect(route('article.index'));
     }
@@ -49,7 +54,8 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        return view('articles/show', ['article' => $article]);
+        $comments = Comment::where('article_id', $article->id)->latest()->get();
+        return view('articles/show', ['article'=>$article, 'comments'=>$comments]);
     }
 
     /**
@@ -84,6 +90,7 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
+        Comment::where('article_id', $article->id)->delete();
         $article->delete();
         return redirect()->route('article.index');
     }

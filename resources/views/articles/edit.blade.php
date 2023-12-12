@@ -1,5 +1,14 @@
 @extends('layout')
 @section('content')
+<div class="alert-danger">
+  @if ($errors->any())
+    @foreach($errors->all() as $error)
+    <ul>
+      <li>{{$error}}</li>
+    </ul>
+    @endforeach
+  @endif
+</div>
 <form action="/article/{{$article->id}}" method="post">
   @csrf
   @method('PUT')

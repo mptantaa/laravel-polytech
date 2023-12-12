@@ -1,5 +1,14 @@
 @extends('layout')
 @section('content')
+<div class="alert-danger">
+  @if ($errors->any())
+    @foreach($errors->all() as $error)
+    <ul>
+      <li>{{$error}}</li>
+    </ul>
+    @endforeach
+  @endif
+</div>
 <form action="/article" method="post">
   @csrf
   <div class="form-group">
@@ -18,6 +27,6 @@
     <label for="exampleInputDesc1">Текст</label>
     <textarea name="desc" class="form-control" id="exampleInputDesc1"></textarea>
   </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <button type="submit" class="btn btn-primary">Создать</button>
 </form>
 @endsection

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CommentController;
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +28,14 @@ Route::get('/logout', [AuthController::class,'logout']);
 
 //Article
 Route::resource('article', ArticleController::class)->middleware('auth:sanctum');
+
+//Comment
+Route::middleware('auth:sanctum')->prefix('/comment')->group(function () {
+    Route::post('', [CommentController::class, 'store']);
+    Route::get('/{comment}/edit', [CommentController::class, 'edit'])->name('comment.edit');
+    Route::put('{comment}', [CommentController::class, 'update']);
+    Route::delete('{comment}', [CommentController::class, 'destroy']);
+});
 
 Route::get('/', [MainController::class,'index']);
 Route::get('/gallery/{full_image}', [MainController::class,'show']);
