@@ -31,18 +31,18 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
-        <li class="nav-item">
+        <li class="nav-item @activeLink('article')" >
           <a class="nav-link" href="/article">Статьи</a>
         </li>
         @can('create')
-        <li class="nav-item">
+        <li class="nav-item @activeLink('article/create')">
           <a class="nav-link" href="/article/create">Создать статью</a>
         </li>
         @endcan
-        <li class="nav-item active">
+        <li class="nav-item @activeLink('about')">
           <a class="nav-link" href="/about">О нас <span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item @activeLink('contact')">
           <a class="nav-link" href="/contact">Контакты</a>
         </li>
       </ul>
@@ -50,10 +50,10 @@
     
     <div class="navbar-nav d-flex justify-content-end">
       @guest
-      <li class="nav-item">
+      <li class="nav-item @activeLink('signup')">
         <a class="nav-link" href="/signup">Регистрация</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item @activeLink('signin')">
         <a class="nav-link" href="/signin">Вход</a>
       </li>
       @endguest
