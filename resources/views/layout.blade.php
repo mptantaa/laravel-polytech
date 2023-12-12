@@ -38,6 +38,9 @@
         <li class="nav-item @activeLink('article/create')">
           <a class="nav-link" href="/article/create">Создать статью</a>
         </li>
+        <li class="nav-item @activeLink('comment')">
+          <a class="nav-link" href="/comment">Список комментариев</a>
+        </li>
         @endcan
         <li class="nav-item @activeLink('about')">
           <a class="nav-link" href="/about">О нас <span class="sr-only">(current)</span></a>

@@ -18,6 +18,17 @@
   </div>
 </div>
 <h3 class="mt-3">Комментарии</h3>
+@isset($_GET['res'])
+@if ($_GET['res'] == 1)
+<div class="alert alert-success" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <p>Ваш комментарий отправлен на модерацию</p>
+</div>
+@endif
+@endisset
+  
 <div class="alert-danger">
   @if ($errors->any())
     @foreach($errors->all() as $error)

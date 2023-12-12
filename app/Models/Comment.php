@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Comment extends Model
 {
@@ -15,5 +16,9 @@ class Comment extends Model
 
     public function article(){
         return $this->belongsTo(Article::class);
+    }
+    
+    public function getUserId():User {
+        return User::findOrFail($this->user_id);
     }
 }

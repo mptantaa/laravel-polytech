@@ -51,7 +51,6 @@ class ArticleController extends Controller
         $article->desc = $request->desc;
         $article->user_id = auth()->id();
         $res = $article->save();
-        if ($res) MailJob::dispatch($article);
         return redirect(route('article.index'));
     }
 
@@ -60,7 +59,7 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        $comments = Comment::where('article_id', $article->id)->latest()->get();
+        $comments = Comment::where('article_id', $article->id)->where('status',1)->latest()->get();
         return view('articles/show', ['article'=>$article, 'comments'=>$comments]);
     }
 

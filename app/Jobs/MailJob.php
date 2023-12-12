@@ -9,8 +9,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ArticleMail;
-use App\Models\Article;
+use App\Mail\CommentMail;
+use App\Models\Comment;
 
 
 class MailJob implements ShouldQueue
@@ -20,10 +20,10 @@ class MailJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    protected $article;
-    public function __construct(Article $article)
+    protected $comment;
+    public function __construct(Comment $comment)
     {
-        $this->article = $article;
+        $this->comment = $comment;
     }
 
     /**
@@ -31,6 +31,6 @@ class MailJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::send(new ArticleMail($this->article));
+        Mail::send(new CommentMail($this->comment));
     }
 }
