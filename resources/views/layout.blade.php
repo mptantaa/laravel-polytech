@@ -54,6 +54,16 @@
         </li>
         @endguest
         @auth
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+              Уведомлений: {{auth()->user()->unreadNotifications->count()}}
+            </a>
+            <div class="dropdown-menu">
+              @foreach(auth()->user()->unreadNotifications as $notification)
+                <a class="dropdown-item" href="/article/{{$notification->data['article']['id']}}?notify={{$notification->id}}">Новая статья: {{$notification->data['article']['title']}}</a>
+              @endforeach
+            </div>
+          </li>
         <li class="nav-item">
           <a class="nav-link" href="/logout">Выход</a>
         </li>      

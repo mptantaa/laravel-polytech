@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Jobs\MailJob;
 use App\Models\Article;
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Gate;
 use App\Events\CreateArticleEvent;
+use App\Notifications\CreateArticleNotify;
+use Illuminate\Support\Facades\Notification;
 
 
 class ArticleController extends Controller
@@ -52,7 +55,13 @@ class ArticleController extends Controller
         $article->desc = $request->desc;
         $article->user_id = auth()->id();
         $res = $article->save();
-        if ($res) CreateArticleEvent::dispatch($article);
+        if ($res) {
+            CreateArticleEvent::dispatch($article);
+            $users = User::whereNotIn('id', [$article->user_id])
+                ->where('role', 'reader')
+                ->get();
+            Notification::send($users, new CreateArticleNotify($article));
+        }
         return redirect(route('article.index'));
     }
 
@@ -62,6 +71,10 @@ class ArticleController extends Controller
     public function show(Article $article)
     {
         $comments = Comment::where('article_id', $article->id)->where('status',1)->latest()->get();
+        
+        if (isset($_GET['notify']))
+            auth()->user()->notifications->where('id', $_GET['notify'])->first()->markAsRead();
+
         return view('articles/show', ['article'=>$article, 'comments'=>$comments]);
     }
 
