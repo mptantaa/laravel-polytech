@@ -32,7 +32,6 @@ class CreateArticleEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        Log::info('This is an informational message logged to the console');
         return [ new Channel('my-channel') ];
     }
     public function broadcastWith(){
