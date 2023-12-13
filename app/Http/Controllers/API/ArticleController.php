@@ -14,6 +14,7 @@ use App\Events\CreateArticleEvent;
 use App\Notifications\CreateArticleNotify;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Notifications\DatabaseNotification;
 
 class ArticleController extends Controller
 {
@@ -126,6 +127,9 @@ class ArticleController extends Controller
     {
         Gate::authorize('create', [self::class]);
         Comment::where('article_id', $article->id)->delete();
+        DatabaseNotification::where('type', CreateArticleNotify::class)
+            ->where('data->article->id', $article->id)
+            ->delete();
         $res = $article->delete();
         if ($res) Cache::flush();
         return response()->json($article, 201);

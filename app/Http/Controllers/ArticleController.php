@@ -13,6 +13,7 @@ use App\Events\CreateArticleEvent;
 use App\Notifications\CreateArticleNotify;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Notifications\DatabaseNotification;
 
 
 class ArticleController extends Controller
@@ -77,6 +78,7 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
+        var_dump($article);
         $cacheKey = 'article_' . $article->id;
         $comments = Cache::rememberForever($cacheKey, function () use ($article) {
             return Comment::where('article_id', $article->id)->where('status',1)->latest()->get();
@@ -127,6 +129,9 @@ class ArticleController extends Controller
         Gate::authorize('create', [self::class]);
 
         Comment::where('article_id', $article->id)->delete();
+        DatabaseNotification::where('type', CreateArticleNotify::class)
+            ->where('data->article->id', $article->id)
+            ->delete();
         $res = $article->delete();
         if ($res) Cache::flush();
         return redirect()->route('article.index');
