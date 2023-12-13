@@ -114,8 +114,8 @@ class ArticleController extends Controller
         $article->title = $request->title;
         $article->shortDesc = $request->shortDesc;
         $article->desc = $request->desc;
-        $article->save();
-        Cache::flush();
+        $res = $article->save();
+        if ($res) Cache::flush();
         return redirect(route('article.show', ['article' => $article]));
     }
 
@@ -127,8 +127,8 @@ class ArticleController extends Controller
         Gate::authorize('create', [self::class]);
 
         Comment::where('article_id', $article->id)->delete();
-        $article->delete();
-        Cache::flush();
+        $res = $article->delete();
+        if ($res) Cache::flush();
         return redirect()->route('article.index');
     }
 }

@@ -23,15 +23,15 @@ class CommentController extends Controller
     public function accept(int $id){
         $comment = Comment::findOrFail($id);
         $comment->status = 1;
-        $comment->save();
-        Cache::flush();
+        $res = $comment->save();
+        if ($res) Cache::flush();
         return redirect()->route('comment.index');
     }
     public function reject(int $id){
         $comment = Comment::findOrFail($id);
         $comment->status = 0;
-        $comment->save();
-        Cache::flush();
+        $res = $comment->save();
+        if ($res) Cache::flush();
         return redirect()->route('comment.index');
     }
     public function store(Request $request) {
@@ -68,15 +68,15 @@ class CommentController extends Controller
         Gate::authorize('comment', $comment);
         $comment->title = $request->title;
         $comment->text = $request->text;
-        $comment->save();
-        Cache::flush();
+        $res = $comment->save();
+        if ($res) Cache::flush();
         return redirect()->route('article.show', ['article'=>$comment->article_id]);
     }
     public function destroy($id){
         $comment = Comment::findOrFail($id);
         Gate::authorize('comment', $comment);
-        $comment->delete();
-        Cache::flush();
+        $res = $comment->delete();
+        if ($res) Cache::flush();
         return redirect()->route('article.show', ['article'=>$comment->article_id]);
     }
 }
