@@ -8,24 +8,30 @@ use App\Jobs\MailJob;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Article;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 
 class CommentController extends Controller
 {
     public function index(){
         Gate::authorize('create', [self::class]);
-        $comments = Comment::latest()->paginate(10);
+        $cacheKey = 'comments_' . request('page', 1);
+        $comments = Cache::remember($cacheKey, 3000, function () {
+            return Comment::latest()->paginate(10);
+        });
         return view('comments/index', ['comments'=>$comments]);
     }
     public function accept(int $id){
         $comment = Comment::findOrFail($id);
         $comment->status = 1;
         $comment->save();
+        Cache::flush();
         return redirect()->route('comment.index');
     }
     public function reject(int $id){
         $comment = Comment::findOrFail($id);
         $comment->status = 0;
         $comment->save();
+        Cache::flush();
         return redirect()->route('comment.index');
     }
     public function store(Request $request) {
@@ -39,7 +45,12 @@ class CommentController extends Controller
         $comment->article_id = $request->article_id;
         $comment->user_id = auth()->id();
         $res = $comment->save();
-        if ($res) MailJob::dispatch($comment);
+        if ($res) {
+            MailJob::dispatch($comment);
+            for ($page = 1; Cache::has('comments_' . $page); $page++) {
+                Cache::forget('comments_' . $page);
+            }
+        }            
         return redirect(route('article.show', ['article'=>$request->article_id, 'res'=>$res]));
     }
     public function edit($id){
@@ -58,12 +69,14 @@ class CommentController extends Controller
         $comment->title = $request->title;
         $comment->text = $request->text;
         $comment->save();
+        Cache::flush();
         return redirect()->route('article.show', ['article'=>$comment->article_id]);
     }
     public function destroy($id){
         $comment = Comment::findOrFail($id);
         Gate::authorize('comment', $comment);
         $comment->delete();
+        Cache::flush();
         return redirect()->route('article.show', ['article'=>$comment->article_id]);
     }
 }

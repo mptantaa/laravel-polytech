@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Events\CreateArticleEvent;
 use App\Notifications\CreateArticleNotify;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Cache;
 
 
 class ArticleController extends Controller
@@ -21,7 +22,10 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        $articles = Article::latest()->paginate(5);
+        $cacheKey = 'articles_' . request('page', 1);
+        $articles = Cache::remember($cacheKey, 3000, function () {
+            return Article::latest()->paginate(5);
+        });        
         return view('articles/index', ['articles'=> $articles]);
     }
 
@@ -61,6 +65,9 @@ class ArticleController extends Controller
                 ->where('role', 'reader')
                 ->get();
             Notification::send($users, new CreateArticleNotify($article));
+            for ($page = 1; Cache::has('articles_' . $page); $page++) {
+                Cache::forget('articles_' . $page);
+            }            
         }
         return redirect(route('article.index'));
     }
@@ -70,8 +77,11 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        $comments = Comment::where('article_id', $article->id)->where('status',1)->latest()->get();
-        
+        $cacheKey = 'article_' . $article->id;
+        $comments = Cache::rememberForever($cacheKey, function () use ($article) {
+            return Comment::where('article_id', $article->id)->where('status',1)->latest()->get();
+        });
+
         if (isset($_GET['notify']))
             auth()->user()->notifications->where('id', $_GET['notify'])->first()->markAsRead();
 
@@ -105,6 +115,7 @@ class ArticleController extends Controller
         $article->shortDesc = $request->shortDesc;
         $article->desc = $request->desc;
         $article->save();
+        Cache::flush();
         return redirect(route('article.show', ['article' => $article]));
     }
 
@@ -117,6 +128,7 @@ class ArticleController extends Controller
 
         Comment::where('article_id', $article->id)->delete();
         $article->delete();
+        Cache::flush();
         return redirect()->route('article.index');
     }
 }
