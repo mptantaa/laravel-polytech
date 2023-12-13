@@ -78,7 +78,6 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        var_dump($article);
         $cacheKey = 'article_' . $article->id;
         $comments = Cache::rememberForever($cacheKey, function () use ($article) {
             return Comment::where('article_id', $article->id)->where('status',1)->latest()->get();
