@@ -24,7 +24,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
         Blade::directive('activeLink', function ($route){
-            Log::alert($route);
             return "<?php echo request()->is($route) ? 'active' : null;?>";
         });
     }
